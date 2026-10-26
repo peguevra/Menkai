@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ja" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>面会予約管理</title>
+    <link rel="stylesheet" href="/lib/tabler.min.css">
+    <link rel="stylesheet" href="/app.css">
+    <script src="/app.js" defer></script>
+</head>
+<body>
+<div class="page-shell">
+    <header class="app-header">
+        <div class="brand-mark" aria-hidden="true">面</div>
+        <div class="brand-copy">
+            <div class="brand-eyebrow">FACILITY OPERATIONS</div>
+            <h1>面会予約管理</h1>
+        </div>
+        <div class="header-note"><span class="status-dot"></span>施設内管理</div>
+    </header>
+
+    <main>
+        <section class="card filter-panel" aria-labelledby="filter-title">
+            <div class="card-body">
+                <div class="section-heading">
+                    <div>
+                        <div class="section-kicker">SCHEDULE</div>
+                        <h2 id="filter-title">表示日・施設選択</h2>
+                    </div>
+                    <button type="button" class="btn btn-outline-secondary" id="reloadButton">
+                        <span aria-hidden="true">↻</span> 更新
+                    </button>
+                </div>
+
+                <div class="date-row">
+                    <div class="date-field">
+                        <label class="form-label" for="selectedDate">表示する日付</label>
+                        <input class="form-control form-control-lg" id="selectedDate" type="date" required>
+                    </div>
+                    <button type="button" class="btn btn-outline-primary today-button" id="todayButton">今日</button>
+                </div>
+
+                <div class="filter-label">事業所で絞り込み</div>
+                <div class="facility-filters" id="facilityFilters" aria-label="施設で絞り込み">
+                    <button type="button" class="btn btn-primary filter-button active"
+                            data-facility="すべて" aria-pressed="true">すべて</button>
+                    <button type="button" class="btn btn-outline-secondary filter-button"
+                            data-facility="信愛苑" aria-pressed="false">信愛苑</button>
+                    <button type="button" class="btn btn-outline-secondary filter-button"
+                            data-facility="わかば" aria-pressed="false">わかば</button>
+                    <button type="button" class="btn btn-outline-secondary filter-button"
+                            data-facility="clinicSHIRO" aria-pressed="false">clinicSHIRO</button>
+                </div>
+            </div>
+        </section>
+
+        <details class="card registration-panel" id="registrationPanel">
+            <summary class="registration-summary">
+                <span class="summary-icon" aria-hidden="true">＋</span>
+                <span class="summary-copy">
+                    <span class="section-kicker">NEW RESERVATION</span>
+                    <span class="summary-title">予約を登録</span>
+                    <span class="summary-subtitle">選択中の日付に面会予約を追加します</span>
+                </span>
+                <span class="summary-chevron" aria-hidden="true"></span>
+            </summary>
+
+            <div class="registration-content">
+                <form id="reservationForm">
+                    <div class="form-grid">
+                        <div>
+                            <label class="form-label" for="residentName">入所者名 <span class="required-mark">必須</span></label>
+                            <input class="form-control" id="residentName" name="residentName"
+                                   maxlength="100" required autocomplete="off" placeholder="例：山田 花子">
+                        </div>
+                        <div>
+                            <label class="form-label" for="bookerName">予約者名 <span class="required-mark">必須</span></label>
+                            <input class="form-control" id="bookerName" name="bookerName"
+                                   maxlength="100" required autocomplete="off" placeholder="例：山田 太郎">
+                        </div>
+                        <div>
+                            <label class="form-label" for="visitTime">面会時刻 <span class="required-mark">必須</span></label>
+                            <input class="form-control" id="visitTime" name="visitTime" type="time" required>
+                        </div>
+                        <div>
+                            <label class="form-label" for="visitorCount">面会人数 <span class="required-mark">必須</span></label>
+                            <input class="form-control" id="visitorCount" name="visitorCount"
+                                   type="number" min="1" max="100" step="1" value="1" required>
+                        </div>
+                        <div class="form-field-wide">
+                            <label class="form-label" for="facility">事業所 <span class="required-mark">必須</span></label>
+                            <select class="form-select" id="facility" name="facility" required>
+                                <option value="信愛苑">信愛苑</option>
+                                <option value="わかば">わかば</option>
+                                <option value="clinicSHIRO">clinicSHIRO</option>
+                            </select>
+                        </div>
+                        <div class="form-field-wide">
+                            <label class="form-label" for="detail">詳細 <span class="optional-mark">任意</span></label>
+                            <textarea class="form-control" id="detail" name="detail" maxlength="500"
+                                      rows="3" placeholder="連絡事項など"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <p class="form-hint">登録日は上部で選択している日付です。</p>
+                        <button type="submit" class="btn btn-primary btn-lg" id="submitButton">
+                            ＋ 予約を登録
+                        </button>
+                    </div>
+                    <p class="message" id="formMessage" role="status" aria-live="polite"></p>
+                </form>
+            </div>
+        </details>
+
+        <section class="reservation-section" aria-labelledby="list-title">
+            <div class="list-heading">
+                <div>
+                    <div class="section-kicker">DAILY OVERVIEW</div>
+                    <h2 id="list-title">予約一覧</h2>
+                </div>
+                <div class="list-summary">
+                    <span class="count-number" id="reservationCount">—</span>
+                    <span class="count-label">件</span>
+                </div>
+            </div>
+            <div id="listMessage" class="message" role="status" aria-live="polite"></div>
+            <div class="reservation-list" id="reservationList"></div>
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <span>面会予約管理</span>
+        <span>施設内業務システム</span>
+    </footer>
+</div>
+</body>
+</html>

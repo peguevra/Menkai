@@ -1,0 +1,8 @@
+bin/
+obj/
+.vs/
+.vscode/
+App_Data/visits.db
+App_Data/visits.db-shm
+App_Data/visits.db-wal
+wwwroot_backup/
