@@ -1,12 +1,13 @@
-
+﻿
 using System.Globalization;
 using Microsoft.Data.Sqlite;
 
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
+// データベースは公開用フォルダーから独立した場所に保存する
 var dataDirectory = Path.Combine(
-    app.Environment.ContentRootPath, "App_Data");
+    @"C:\Apps\Menkai", "data");
 
 Directory.CreateDirectory(dataDirectory);
 
